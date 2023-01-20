@@ -5,4 +5,6 @@ const router = Router();
 
 router.get('/habits', HabitsConstroller.findAll);
 
+router.post('/habits', HabitsConstroller.store);
+
 export default router;
