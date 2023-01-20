@@ -7,4 +7,6 @@ router.get('/habits', HabitsConstroller.findAll);
 
 router.post('/habits', HabitsConstroller.store);
 
+router.get('/day', HabitsConstroller.findHabitsDay)
+
 export default router;
