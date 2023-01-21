@@ -62,7 +62,65 @@ class HabitsRepositories {
       completedHabits
     }
   }
+
+  //Completando Hábito
+  async toggleHabitRepo(id: string, today: Date){
+    let day = await prisma.day.findUnique({
+      where: {
+        date: today,
+      }
+    });
+
+    if (!day) {
+      day = await prisma.day.create({
+        data: {
+          date: today
+        }
+      })
+    }
+
+    const dayHabit = await prisma.dayHabit.findUnique({
+      where: {
+        day_id_habit_id: {
+          day_id: day.id,
+          habit_id: id
+        }
+      }
+    })
+
+    if (dayHabit) {
+      await prisma.dayHabit.delete({
+        where: {
+          id: dayHabit.id
+        }
+      })
+    } else {
+      await prisma.dayHabit.create({
+        data: {
+          day_id: day.id,
+          habit_id: id
+        }
+      })
+    }
+    
+  }
   
+  async habitsCompletedInDay(){
+    const summary = await prisma.$queryRaw`
+      SELECT 
+        D.id, 
+        D.date,
+        (
+          SELECT
+            cast(count(*) as float)
+          FROM day_habits DH
+          WHERE DH.day_id = D.id
+        ) as completed
+      FROM days D
+    `
+
+    return summary
+  }
 }
 
 export default new HabitsRepositories
