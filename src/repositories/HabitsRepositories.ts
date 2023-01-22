@@ -55,7 +55,7 @@ class HabitsRepositories {
 
     const completedHabits = day?.dayHabit.map(dayHabit => {
       return dayHabit.habit_id
-    })
+    }) ?? []
 
     return {
       possibleHabits,
